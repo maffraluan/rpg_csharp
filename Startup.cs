@@ -45,7 +45,6 @@ namespace csharp_rpg
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
 
             app.UseAuthorization();
