@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using csharp_rpg.DTO.Character;
 using csharp_rpg.Models;
+using csharp_rpg.Services.CharacterService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace csharp_rpg.Controllers
@@ -9,20 +12,33 @@ namespace csharp_rpg.Controllers
   [Route("[controller]")]
   public class CharacterController : ControllerBase
   {
-    private static List<Character> _characters = new List<Character>
+    private readonly ICharacterService _characterService;
+
+    public CharacterController(ICharacterService _characterService)
     {
-        new Character(),
-        new Character { Id = 1, Name = "Sam"}
-    };
+      this._characterService = _characterService;
+
+    }
+
     [HttpGet("GetAll")]
-    public IActionResult Get()
+    public async Task<IActionResult> Get()
     {
-      return Ok(_characters);
+      return Ok(await this._characterService.GetAllCharacters());
     }
     [HttpGet("{id}")]
-    public IActionResult GetSingle(int id)
+    public async Task<IActionResult> GetSingle(int id)
     {
-      return Ok(_characters.FirstOrDefault(c => c.Id == id));
+      return Ok(await this._characterService.GetCharacterById(id));
     }
+    [HttpPost]
+    public async Task<IActionResult> AddCharacter(AddCharacterDTO _newCharacter)
+    {
+      return Ok(await this._characterService.AddCharacter(_newCharacter));
     }
+    [HttpPut]
+    public async Task<IActionResult> UpdateCharacter(UpdateCharacterDTO _updatedCharacter)
+    {
+      return Ok(await this._characterService.UpdateCharacter(_updatedCharacter));
+    }
+  }
 }
